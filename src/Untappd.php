@@ -18,9 +18,9 @@ class Untappd{
 
 	public function __construct($config = []) 
 	{
-		$this->client_id 		=	(isset($config['client_id'])) 		?	$config['client_id'] : '';
-		$this->client_secret 	=	(isset($config['client_secret']))	?	$config['client_secret'] : '';
-		$this->redirect_url 	=	(isset($config['redirect_url']))	?	$config['redirect_url'] : '';
+		$this->client_id = (isset($config['client_id'])) ?	$config['client_id'] : '';
+		$this->client_secret = (isset($config['client_secret'])) ? $config['client_secret'] : '';
+		$this->redirect_url = (isset($config['redirect_url'])) ? $config['redirect_url'] : '';
 	}
 
 	public function getAuthenticateUrl()
