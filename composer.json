@@ -1,0 +1,21 @@
+{
+    "name": "seengee/untappd",
+    "description": "PHP Wrapper around the Untappd API",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rob Mills",
+            "email": "seengee@seengee.co.uk"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.0",
+        "guzzle/guzzle": "3.7.*@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Untappd\\": "src"
+        }
+    }
+}
