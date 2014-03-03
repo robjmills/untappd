@@ -1,11 +1,11 @@
 {
-    "name": "seengee/untappd",
+    "name": "robjmills/untappd",
     "description": "PHP Wrapper around the Untappd API",
     "license": "MIT",
     "authors": [
         {
             "name": "Rob Mills",
-            "email": "seengee@seengee.co.uk"
+            "email": "robjmills@gmail.com"
         }
     ],
     "minimum-stability": "dev",
