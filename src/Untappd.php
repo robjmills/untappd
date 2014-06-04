@@ -11,11 +11,14 @@ class Untappd{
     private $access_token = "";
     protected $error = "";
 
-    // untappd API urls
+    // untappd API URL's
     public $apiBase = "https://api.untappd.com/v4/";
     public $authenticateURL = "https://untappd.com/oauth/authenticate/";
     public $authorizeURL = "https://untappd.com/oauth/authorize/";
 
+    /**
+     * @param array $config
+     */
     public function __construct($config = [])
     {
         $this->client_id = (isset($config['client_id'])) ?	$config['client_id'] : '';
@@ -23,6 +26,10 @@ class Untappd{
         $this->redirect_url = (isset($config['redirect_url'])) ? $config['redirect_url'] : '';
     }
 
+    /**
+     * Build URL for authentication
+     * @return string url
+     */
     public function getAuthenticateUrl()
     {
         return $this->authenticateURL.
@@ -31,6 +38,11 @@ class Untappd{
         "&redirect_url=".$this->redirect_url;
     }
 
+    /**
+     * Build URL for authorisation
+     * @param string $code
+     * @return string URL
+     */
     public function getAuthoriseUrl($code)
     {
         return $this->authorizeURL .
@@ -41,24 +53,41 @@ class Untappd{
         "&code=".$code;
     }
 
+    /**
+     * Set access token
+     * @param string $token
+     */
     private function setAccessToken($token)
     {
         $this->access_token = $token;
     }
 
+    /**
+     * Set error message
+     * @param string $error
+     */
     private function setError($error)
     {
         $this->error = $error;
     }
 
+    /**
+     * Get error
+     * @return string error
+     */
     public function getError()
     {
         return $this->error;
     }
 
+    /**
+     * Authorise at Untappd
+     * @param string $url
+     * @return bool
+     */
     public function authorise($url)
     {
-        $responses = $this->client($url);
+        $responses = $this->request($url);
         if($responses['meta']['http_code'] == '200')
         {
             $token = $responses['response']['access_token'];
@@ -72,18 +101,30 @@ class Untappd{
         }
     }
 
+    /**
+     * Utility method to retrieve data from Untappd
+     * @param string $method
+     * @param array $params
+     * @return mixed $responses
+     */
     public function getCommand($method, $params = [])
     {
         $url = $this->apiBase.$method;
 
         // merge passed params with existing params
         $params = array_merge($params,["access_token" => $this->access_token]);
-        $responses = $this->client($url,$params);
+        $responses = $this->request($url,$params);
         return $responses;
     }
 
 
-    private function client($url, $params = [], $method="get")
+    /**
+     * Wrapper around Guzzlehttp\Client
+     * @param string $url
+     * @param array $params
+     * @return mixed $responses
+     */
+    private function request($url, $params = [])
     {
         $client = new Client();
         if ( count($params) > 0 )
@@ -94,5 +135,4 @@ class Untappd{
         $responses = json_decode($response->getBody(),true);
         return $responses;
     }
-
 }
