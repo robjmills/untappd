@@ -107,7 +107,7 @@ class Untappd{
      * @param array $params
      * @return mixed $responses
      */
-    public function getCommand($method, $params = [])
+    public function query($method, $params = [])
     {
         $url = $this->apiBase.$method;
 
