@@ -62,6 +62,11 @@ class Untappd{
         $this->access_token = $token;
     }
 
+    public function getAccessToken()
+    {
+        return $this->access_token;
+    }
+
     /**
      * Set error message
      * @param string $error
@@ -110,9 +115,8 @@ class Untappd{
     public function query($method, $params = [])
     {
         $url = $this->apiBase.$method;
-
         // merge passed params with existing params
-        $params = array_merge($params,["access_token" => $this->access_token]);
+        //$params = array_merge($params,["access_token" => $this->access_token]);
         $responses = $this->request($url,$params);
         return $responses;
     }
