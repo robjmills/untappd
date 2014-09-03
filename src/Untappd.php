@@ -4,6 +4,8 @@ use GuzzleHttp\Client;
 use Illuminate\Cache;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Redis\Database;
+use Illuminate\Support\Facades\Config;
 
 class Untappd{
 
@@ -36,7 +38,8 @@ class Untappd{
                     'cache.path'   => $config['cache']['path'],
                     'cache.prefix' => $config['cache']['prefix']
                 ],
-                'files' => new Filesystem
+                'files' => new Filesystem,
+                'redis' => new Database($config['cache']['redis'])
             ];
 
             $cacheManager = new CacheManager($app);
@@ -147,7 +150,8 @@ class Untappd{
         else
         {
             $responses = $this->request($url,$params);
-            $this->cache->put($urlkey, json_encode($responses), 1);
+            $minutes = 60;
+            $this->cache->put($urlkey, json_encode($responses), $minutes);
         }
         return $responses;
     }
