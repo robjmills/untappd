@@ -1,6 +1,9 @@
 <?php namespace Untappd;
 
 use GuzzleHttp\Client;
+use Illuminate\Cache;
+use Illuminate\Cache\CacheManager;
+use Illuminate\Filesystem\Filesystem;
 
 class Untappd{
 
@@ -9,6 +12,7 @@ class Untappd{
     private $client_secret = "";
     private $redirect_url = "";
     private $access_token = "";
+    private $cache;
     protected $error = "";
 
     // untappd API URL's
@@ -24,6 +28,20 @@ class Untappd{
         $this->client_id = (isset($config['client_id'])) ?	$config['client_id'] : '';
         $this->client_secret = (isset($config['client_secret'])) ? $config['client_secret'] : '';
         $this->redirect_url = (isset($config['redirect_url'])) ? $config['redirect_url'] : '';
+
+        if(isset($config['cache']) && is_array($config['cache'])) {
+            $app = [
+                  'config' => [
+                      'cache.driver' => $config['cache']['driver'],
+                      'cache.path'   => $config['cache']['path'],
+                      'cache.prefix' => $config['cache']['prefix']
+                  ],
+                  'files' => new Filesystem
+            ];
+
+            $cacheManager = new CacheManager($app);
+            $this->cache = $cacheManager->driver();
+        }
     }
 
     /**
@@ -115,9 +133,22 @@ class Untappd{
     public function query($method, $params = [])
     {
         $url = $this->apiBase.$method;
-        // merge passed params with existing params
-        //$params = array_merge($params,["access_token" => $this->access_token]);
-        $responses = $this->request($url,$params);
+        $urlkey = $url;
+
+        // we loop through this query twice so we want to make sure we've got the correct one
+        if(array_key_exists('min_id',$params)){
+            $urlkey .= "&min_id=".$params['min_id'];
+        }
+
+        if ($this->cache->has($urlkey))
+        {
+            $responses = json_decode($this->cache->get($urlkey),true);
+        }
+        else
+        {
+            $responses = $this->request($url,$params);
+            $this->cache->put($urlkey, json_encode($responses), 1);
+        }
         return $responses;
     }
 
@@ -130,6 +161,7 @@ class Untappd{
      */
     private function request($url, $params = [])
     {
+        Clockwork::info('request');
         $client = new Client();
         if ( count($params) > 0 )
         {
