@@ -15,6 +15,7 @@ class Untappd{
     private $redirect_url = "";
     private $access_token = "";
     private $cache;
+    private $cache_duration = 60;
     protected $error = "";
 
     // untappd API URL's
@@ -45,6 +46,9 @@ class Untappd{
             $cacheManager = new CacheManager($app);
             $this->cache = $cacheManager->driver();
         }
+
+        // set cache duration either using config or using default value
+        $this->cache_duration = (isset($config['cache']['duration'])) ? $config['cache']['duration'] : $this->cache_duration;
     }
 
     /**
@@ -150,7 +154,7 @@ class Untappd{
         else
         {
             $responses = $this->request($url,$params);
-            $minutes = 60;
+            $minutes = $this->cache_duration;
             $this->cache->put($urlkey, json_encode($responses), $minutes);
         }
         return $responses;
