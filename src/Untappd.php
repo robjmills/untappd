@@ -31,12 +31,12 @@ class Untappd{
 
         if(isset($config['cache']) && is_array($config['cache'])) {
             $app = [
-                  'config' => [
-                      'cache.driver' => $config['cache']['driver'],
-                      'cache.path'   => $config['cache']['path'],
-                      'cache.prefix' => $config['cache']['prefix']
-                  ],
-                  'files' => new Filesystem
+                'config' => [
+                    'cache.driver' => $config['cache']['driver'],
+                    'cache.path'   => $config['cache']['path'],
+                    'cache.prefix' => $config['cache']['prefix']
+                ],
+                'files' => new Filesystem
             ];
 
             $cacheManager = new CacheManager($app);
@@ -161,7 +161,6 @@ class Untappd{
      */
     private function request($url, $params = [])
     {
-        Clockwork::info('request');
         $client = new Client();
         if ( count($params) > 0 )
         {
