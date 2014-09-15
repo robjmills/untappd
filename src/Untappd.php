@@ -5,7 +5,6 @@ use Illuminate\Cache;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Redis\Database;
-use Illuminate\Support\Facades\Config;
 
 class Untappd{
 
@@ -18,9 +17,21 @@ class Untappd{
     private $cache_duration = 60;
     protected $error = "";
 
-    // untappd API URL's
+    /**
+     * untappd API base URL
+     * @var string
+     */
     public $apiBase = "https://api.untappd.com/v4/";
+    /**
+     * Untappd authentication URL
+     * @var string
+     */
     public $authenticateURL = "https://untappd.com/oauth/authenticate/";
+
+    /**
+     * Untappd autorisation URL
+     * @var string
+     */
     public $authorizeURL = "https://untappd.com/oauth/authorize/";
 
     /**
@@ -87,6 +98,10 @@ class Untappd{
         $this->access_token = $token;
     }
 
+    /**
+     * Get access token
+     * @return string
+     */
     public function getAccessToken()
     {
         return $this->access_token;
